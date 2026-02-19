@@ -1,16 +1,3 @@
-"""
-storage_filter.py
------------------
-Filter 5 - Storage Filter
-
-Persists the fully processed transaction into a SQLite database.
-This is the final stage of the pipeline — it saves all enriched data
-produced by the previous filters into a permanent record.
-
-Database: data/transactions.db (SQLite)
-Table:    transactions
-"""
-
 import sqlite3
 import uuid
 import os
@@ -19,31 +6,15 @@ from filters.base_filter import BaseFilter
 
 
 class StorageFilter(BaseFilter):
-    """
-    Pipeline Filter #5 — Storage
 
-    Responsibilities:
-        - Initialize the SQLite database and create the transactions table if needed.
-        - Generate a unique transaction ID (UUID4).
-        - Insert the complete processed transaction record into the database.
-        - Enrich the transaction with the generated ID, timestamp, and final status.
-    """
 
     def __init__(self, db_path: str = "data/transactions.db"):
-        """
-        Initialize the storage filter and ensure the database is ready.
 
-        Args:
-            db_path (str): Path to the SQLite database file.
-        """
         self.db_path = db_path
         self._init_db()
 
     def _init_db(self) -> None:
-        """
-        Create the transactions table if it does not already exist.
-        Also ensures the data directory exists.
-        """
+
         # Ensure the data directory exists
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
 
@@ -74,21 +45,7 @@ class StorageFilter(BaseFilter):
         print(f"  ┌─ Database ready: '{self.db_path}'")
 
     def process(self, transaction: dict) -> dict:
-        """
-        Save the processed transaction to the SQLite database.
 
-        Args:
-            transaction (dict): Fully enriched transaction context from all previous filters.
-
-        Returns:
-            dict: Transaction enriched with:
-                  - 'transaction_id': Unique UUID for this transaction
-                  - 'timestamp'     : ISO-format datetime of storage
-                  - 'status'        : Final status = 'completed'
-
-        Raises:
-            sqlite3.Error: If the database insert operation fails.
-        """
         transaction_id = str(uuid.uuid4())
         timestamp = datetime.now().isoformat()
 
