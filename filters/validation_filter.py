@@ -1,47 +1,13 @@
-"""
-validation_filter.py
---------------------
-Filter 1 - Validation Filter
-
-Verifies that the incoming transaction contains all required fields
-with valid values before it proceeds through the pipeline.
-
-Required fields:
-    - user_id  : Non-empty string identifying the user
-    - btc_amount: Positive numeric value representing BTC to purchase
-    - currency : One of the accepted base currencies (USD, EUR, GBP)
-"""
-
 from filters.base_filter import BaseFilter
 
 
 class ValidationFilter(BaseFilter):
-    """
-    Pipeline Filter #1 — Validation
 
-    Responsibilities:
-        - Check that all mandatory fields are present.
-        - Validate data types and value constraints.
-        - Normalize the currency field to uppercase.
-        - Reject the transaction early if any field is invalid.
-    """
 
     VALID_CURRENCIES = ["USD", "EUR", "GBP"]
 
     def process(self, transaction: dict) -> dict:
-        """
-        Validate the transaction fields.
 
-        Args:
-            transaction (dict): Raw transaction input.
-
-        Returns:
-            dict: Transaction enriched with 'validation_status' = 'passed'.
-
-        Raises:
-            ValueError: If a required field is missing, empty, or has an invalid value.
-            TypeError:  If btc_amount is not a numeric type.
-        """
         print("  ┌─ Checking required fields...")
 
         # --- Validate user_id ---
