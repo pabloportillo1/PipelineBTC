@@ -1,20 +1,6 @@
-"""
-main.py
--------
-Entry point for the BTC Transaction Pipeline.
-
-Demonstrates the pipeline processing 4 test cases:
-    1. Valid transaction in USD  (Alice Johnson  — 0.5 BTC)
-    2. Valid transaction in EUR  (Bob Smith      — 1.2 BTC)
-    3. Valid transaction in GBP  (Carol White    — 0.25 BTC)
-    4. Error case: inactive user (David Brown    — 0.1 BTC)
-    5. Error case: missing field (no currency)
-"""
-
 import sys
 import os
 
-# Ensure the PipelineBTC directory is on the Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from pipeline import Pipeline
@@ -25,9 +11,7 @@ from filters.fee_filter import FeeFilter
 from filters.storage_filter import StorageFilter
 
 
-# ---------------------------------------------------------------------------
-# Pipeline factory — builds a fresh pipeline for each transaction
-# ---------------------------------------------------------------------------
+
 def build_pipeline() -> Pipeline:
     """
     Instantiate and configure the 5-stage BTC transaction pipeline.
@@ -35,7 +19,7 @@ def build_pipeline() -> Pipeline:
     Returns:
         Pipeline: A fully configured pipeline ready to execute.
     """
-    # Resolve paths relative to this file's location
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
     users_db = os.path.join(base_dir, "data", "users.json")
     transactions_db = os.path.join(base_dir, "data", "transactions.db")
@@ -49,9 +33,6 @@ def build_pipeline() -> Pipeline:
     return pipeline
 
 
-# ---------------------------------------------------------------------------
-# Transaction runner — executes one transaction and prints the summary
-# ---------------------------------------------------------------------------
 def run_transaction(transaction: dict) -> dict | None:
     """
     Run a single transaction through the pipeline and print the result summary.
@@ -104,9 +85,7 @@ def _print_summary(result: dict) -> None:
     print("└" + "─" * 62 + "┘")
 
 
-# ---------------------------------------------------------------------------
-# Main — test cases
-# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
     SEPARATOR = "\n" + "━" * 64 + "\n"
 
@@ -114,7 +93,7 @@ if __name__ == "__main__":
     print("   BTC PURCHASE PIPELINE — EXECUTION DEMO")
     print("=" * 64)
 
-    # ── Test Case 1: Valid USD transaction ──────────────────────────────
+    # ── Test Case 1: Valid USD transaction 
     print(SEPARATOR)
     print("TEST CASE 1 — Valid transaction | USD | Alice Johnson | 0.5 BTC")
     run_transaction({
@@ -123,7 +102,7 @@ if __name__ == "__main__":
         "currency": "USD"
     })
 
-    # ── Test Case 2: Valid EUR transaction ──────────────────────────────
+    # ── Test Case 2: Valid EUR transaction 
     print(SEPARATOR)
     print("TEST CASE 2 — Valid transaction | EUR | Bob Smith | 1.2 BTC")
     run_transaction({
@@ -132,7 +111,7 @@ if __name__ == "__main__":
         "currency": "EUR"
     })
 
-    # ── Test Case 3: Valid GBP transaction ──────────────────────────────
+    # ── Test Case 3: Valid GBP transaction 
     print(SEPARATOR)
     print("TEST CASE 3 — Valid transaction | GBP | Carol White | 0.25 BTC")
     run_transaction({
@@ -141,7 +120,7 @@ if __name__ == "__main__":
         "currency": "GBP"
     })
 
-    # ── Test Case 4: Inactive user (should fail at Authentication) ──────
+    # ── Test Case 4: Inactive user (should fail at Authentication)
     print(SEPARATOR)
     print("TEST CASE 4 — ERROR: Inactive user | David Brown (USR004)")
     run_transaction({
@@ -150,7 +129,7 @@ if __name__ == "__main__":
         "currency": "USD"
     })
 
-    # ── Test Case 5: Missing currency field (should fail at Validation) ─
+    # ── Test Case 5: Missing currency field (should fail at Validation)
     print(SEPARATOR)
     print("TEST CASE 5 — ERROR: Missing 'currency' field")
     run_transaction({
