@@ -1,23 +1,7 @@
-"""
-transformation_filter.py
-------------------------
-Filter 3 - Transformation Filter
-
-Converts the BTC amount to the target base currency using exchange rates
-obtained from a simulated REST API (mock service with fixed realistic rates).
-
-Simulated API endpoint: GET /api/v1/btc/price?currency={USD|EUR|GBP}
-Response format: { "currency": "USD", "btc_price": 65000.00, "source": "MockBTCAPI" }
-"""
-
 import datetime
 from filters.base_filter import BaseFilter
 
 
-# ---------------------------------------------------------------------------
-# Simulated REST API — Mock BTC Exchange Rate Service
-# In a real implementation this would be an HTTP call to CoinGecko, Binance, etc.
-# ---------------------------------------------------------------------------
 MOCK_BTC_RATES = {
     "USD": 65_000.00,   # 1 BTC = 65,000.00 USD
     "EUR": 60_500.00,   # 1 BTC = 60,500.00 EUR
@@ -28,22 +12,7 @@ MOCK_API_SOURCE = "MockBTCPriceAPI v1.0"
 
 
 def _simulate_api_call(currency: str) -> dict:
-    """
-    Simulates an HTTP GET request to a BTC price REST API.
 
-    In production this would be:
-        response = requests.get(f"https://api.btcprice.io/v1/price?currency={currency}")
-        return response.json()
-
-    Args:
-        currency (str): The target currency code (USD, EUR, GBP).
-
-    Returns:
-        dict: Simulated API response with BTC price data.
-
-    Raises:
-        ConnectionError: If the currency is not supported by the mock API.
-    """
     if currency not in MOCK_BTC_RATES:
         raise ConnectionError(
             f"[TransformationFilter] Mock API error: "
@@ -60,31 +29,10 @@ def _simulate_api_call(currency: str) -> dict:
 
 
 class TransformationFilter(BaseFilter):
-    """
-    Pipeline Filter #3 — Transformation
 
-    Responsibilities:
-        - Call the (simulated) REST API to retrieve the current BTC price.
-        - Calculate the total transaction value in the base currency.
-        - Enrich the transaction with price data and computed total.
-    """
 
     def process(self, transaction: dict) -> dict:
-        """
-        Convert BTC amount to the base currency value.
 
-        Args:
-            transaction (dict): Transaction context from the previous filter.
-
-        Returns:
-            dict: Transaction enriched with:
-                  - 'btc_price'    : Price of 1 BTC in the base currency
-                  - 'total_value'  : btc_amount × btc_price
-                  - 'api_source'   : Name of the price data source
-
-        Raises:
-            ConnectionError: If the mock API cannot return a rate for the currency.
-        """
         currency = transaction["currency"]
         btc_amount = transaction["btc_amount"]
 
